@@ -2,21 +2,22 @@ group 'com.example.flutter_braintree'
 version '1.0'
 
 buildscript {
+    ext.kotlin_version = '1.9.0' // Definimos la versión de Kotlin
     repositories {
         google()
-        mavenCentral()
-        jcenter()
+        mavenCentral() // Usamos mavenCentral en lugar de jcenter
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:8.1.0' // Actualizamos el plugin de Gradle
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Plugin de Kotlin
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral() // Eliminamos jcenter, ya que está obsoleto
         maven {
             url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
             credentials {
@@ -28,37 +29,43 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android' // Añadimos el plugin de Kotlin
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 34 // Actualizamos el SDK de compilación a la última versión
 
-    if (project.android.hasProperty("namespace")) {
-        namespace "com.example.flutter_braintree"
-    }
+    namespace "com.example.flutter_braintree" // Actualización de namespace
 
     defaultConfig {
         minSdkVersion 21
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     lintOptions {
         disable 'InvalidPackage'
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11 // Actualizamos a Java 11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11' // Kotlin 1.9 es compatible con JVM 11
     }
 }
 
 dependencies {
     implementation 'com.braintreepayments.api:drop-in:6.13.0'
-    implementation 'com.google.android.gms:play-services-wallet:16.0.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.gms:play-services-wallet:21.0.0' // Actualizamos a la versión más reciente
+    implementation 'androidx.appcompat:appcompat:1.6.1' // Actualizamos appcompat
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // Actualizamos constraintlayout
+
     components.all {
         allVariants {
             withDependencies { deps ->
                 deps.each { dep ->
-                    if (dep.group == 'net.minidev' && dep.name =='json-smart') {
+                    if (dep.group == 'net.minidev' && dep.name == 'json-smart') {
                         dep.version {
                             prefer "2.3"
                         }
